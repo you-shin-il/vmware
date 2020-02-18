@@ -1,0 +1,65 @@
+GET http://localhost:8080/vmware/vm/list.do
+Accept: application/json
+
+###
+GET http://localhost:8080/vmware/datastore/list.do
+Accept: application/json
+
+###
+GET http://localhost:8080/vmware/resourcePool/list.do
+Accept: application/json
+
+###
+GET http://localhost:8080/vmware/folder/list.do
+Accept: application/json
+
+###
+GET http://localhost:8080/vmware/inventory/find.do
+Accept: application/json
+
+###
+GET http://localhost:8080/vmware/library/list.do
+Accept: application/json
+
+###
+GET http://localhost:8080/vmware/library/get.do?libraryId=d2cee98a-11bd-4953-8553-afa9bd9ad976
+Accept: application/json
+
+###
+#GET http://localhost:8080/vmware/item/list.do?libraryId=d2cee98a-11bd-4953-8553-afa9bd9ad976&libraryId=ovf
+#Accept: application/json
+
+###
+#GET http://localhost:8080/vmware/item/get.do?libraryId=d2cee98a-11bd-4953-8553-afa9bd9ad976
+#Accept: application/json
+
+###
+GET http://localhost:8080/vmware/item/itemModelList.do
+Content-Type: application/json
+
+{
+  "libraryId" : "d2cee98a-11bd-4953-8553-afa9bd9ad976",
+  "type" : "iso"
+}
+
+###
+GET http://localhost:8080/vmware/vm/guestOSList.do
+Content-Type: application/json
+
+###
+
+GET http://localhost:8080/vmware/customizationSpec/list.do
+Content-Type: application/json
+
+###
+GET http://localhost:8080/vmware/vim/test.do
+Content-Type: application/json
+
+###
+
+GET http://localhost:8080/vmware/host/list.do
+Content-Type: application/json
+
+{
+}
+###
