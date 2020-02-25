@@ -12,8 +12,11 @@ public class VMwareDatastoreService {
     @Autowired
     private Datastore datasourceservice;
 
-    public List<DatastoreTypes.Summary> list() {
-        return datasourceservice.list(new DatastoreTypes.FilterSpec.Builder().build());
+    public List<DatastoreTypes.Summary> list(DatastoreTypes.FilterSpec filterSpec) {
+        return datasourceservice.list(filterSpec);
     }
 
+    public DatastoreTypes.Info info(String datastoreId) {
+        return datasourceservice.get(datastoreId);
+    }
 }

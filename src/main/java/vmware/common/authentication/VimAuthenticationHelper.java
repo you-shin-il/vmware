@@ -18,6 +18,7 @@ import com.vmware.vim25.VimPortType;
 import com.vmware.vim25.VimService;
 
 import javax.xml.ws.BindingProvider;
+import javax.xml.ws.spi.Provider;
 import java.util.Map;
 
 /**
@@ -33,7 +34,7 @@ public class VimAuthenticationHelper {
      * -- VimPortType for access to methods
      * -- ServiceContent for access to managed object services
      */
-    private VimService vimService;
+    private VimServiceCustom vimService;
     private VimPortType vimPort;
     private ServiceContent serviceContent;
 
@@ -59,14 +60,14 @@ public class VimAuthenticationHelper {
     public void loginByUsernameAndPassword(String server, String username, String password) {
         try {
             String vimSdkUrl = "https://" + server + VIM_PATH;
-
+            //Provider p = Provider.provider();
             /*
              * Create a VimService object to obtain a VimPort binding provider.
              * The BindingProvider provides access to the protocol fields
              * in request/response messages. Retrieve the request context
              * which will be used for processing message requests.
              */
-            this.vimService = new VimService();
+            this.vimService = new VimServiceCustom();
             this.vimPort = vimService.getVimPort();
             Map<String, Object> ctxt =
                     ((BindingProvider) vimPort).getRequestContext();

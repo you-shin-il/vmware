@@ -2,6 +2,7 @@ package vmware;
 
 import com.vmware.content.Library;
 import com.vmware.content.library.Item;
+import com.vmware.content.library.item.Storage;
 import com.vmware.vapi.bindings.StubConfiguration;
 import com.vmware.vapi.protocol.HttpConfiguration;
 import com.vmware.vcenter.*;
@@ -65,15 +66,15 @@ public class VMwareConfig {
     }
 
     @Bean
-    public VapiAuthenticationHelper vapiAuthenticationHelper() {
-        return new VapiAuthenticationHelper();
-    }
-
-    @Bean
     public VimAuthenticationHelper vimAuthenticationHelper() {
         VimAuthenticationHelper vimAuthenticationHelper = new VimAuthenticationHelper();
         vimAuthenticationHelper.loginByUsernameAndPassword(this.server, this.username, this.password);
         return vimAuthenticationHelper;
+    }
+
+    @Bean
+    public VapiAuthenticationHelper vapiAuthenticationHelper() {
+        return new VapiAuthenticationHelper();
     }
 
     @Bean
@@ -139,6 +140,16 @@ public class VMwareConfig {
     @Bean
     public Cluster clusterservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
         return vapiAuthenticationHelper.getStubFactory().createStub(Cluster.class, stubConfiguration);
+    }
+
+    @Bean
+    public Datacenter datacenterservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
+        return vapiAuthenticationHelper.getStubFactory().createStub(Datacenter.class, stubConfiguration);
+    }
+
+    @Bean
+    public Storage storageservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
+        return vapiAuthenticationHelper.getStubFactory().createStub(Storage.class, stubConfiguration);
     }
 
     private HttpConfiguration buildHttpConfiguration() throws Exception {

@@ -1,40 +1,58 @@
-GET http://localhost:8080/vmware/vm/list.do
+GET http://localhost:8888/vmware/vm/list.do
 Accept: application/json
 
 ###
-GET http://localhost:8080/vmware/datastore/list.do
+GET http://localhost:8888/vmware/datastore/list.do
+Content-Type: application/json
+
+{
+}
+
+###
+
+###
+GET http://localhost:8888/vmware/datastore/info.do?datastoreId=datastore-10
+Content-Type: text/html
+
+###
+
+###
+GET http://localhost:8888/vmware/datacenter/list.do
+Content-Type: application/json
+
+{
+}
+
+###
+GET http://localhost:8888/vmware/resourcePool/list.do-
 Accept: application/json
 
 ###
-GET http://localhost:8080/vmware/resourcePool/list.do
+GET http://localhost:8888/vmware/folder/list.do
 Accept: application/json
 
 ###
-GET http://localhost:8080/vmware/folder/list.do
+GET http://localhost:8888/vmware/inventory/find.do
 Accept: application/json
 
 ###
-GET http://localhost:8080/vmware/inventory/find.do
+GET http://localhost:8888/vmware/library/list.do
 Accept: application/json
 
 ###
-GET http://localhost:8080/vmware/library/list.do
+GET http://localhost:8888/vmware/library/get.do?libraryId=d2cee98a-11bd-4953-8553-afa9bd9ad976
 Accept: application/json
 
 ###
-GET http://localhost:8080/vmware/library/get.do?libraryId=d2cee98a-11bd-4953-8553-afa9bd9ad976
-Accept: application/json
-
-###
-#GET http://localhost:8080/vmware/item/list.do?libraryId=d2cee98a-11bd-4953-8553-afa9bd9ad976&libraryId=ovf
+#GET http://localhost:8888/vmware/item/list.do?libraryId=d2cee98a-11bd-4953-8553-afa9bd9ad976&libraryId=ovf
 #Accept: application/json
 
 ###
-#GET http://localhost:8080/vmware/item/get.do?libraryId=d2cee98a-11bd-4953-8553-afa9bd9ad976
+#GET http://localhost:8888/vmware/item/get.do?libraryId=d2cee98a-11bd-4953-8553-afa9bd9ad976
 #Accept: application/json
 
 ###
-GET http://localhost:8080/vmware/item/itemModelList.do
+GET http://localhost:8888/vmware/item/itemModelList.do
 Content-Type: application/json
 
 {
@@ -43,23 +61,85 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:8080/vmware/vm/guestOSList.do
+GET http://localhost:8888/vmware/vm/guestOSList.do
 Content-Type: application/json
 
 ###
 
-GET http://localhost:8080/vmware/customizationSpec/list.do
+GET http://localhost:8888/vmware/customizationSpec/list.do
 Content-Type: application/json
 
 ###
-GET http://localhost:8080/vmware/vim/test.do
+GET http://localhost:8888/vmware/vim/test.do
 Content-Type: application/json
 
 ###
 
-GET http://localhost:8080/vmware/host/list.do
+###
+GET http://localhost:8888/vmware/content/library/item/storage/list.do
+Content-Type: application/json
+
+###
+
+GET http://localhost:8888/vmware/host/list.do
 Content-Type: application/json
 
 {
 }
+###
+
+###
+GET http://localhost:8888/vmware/vm/create/step1.do
+Content-Type: application/json
+
+{
+}
+
+###
+
+###
+GET http://localhost:8888/vmware/vm/create/step2.do
+Content-Type: application/json
+
+{
+  "datacenters" : ["datacenter-2"]
+}
+
+###
+GET http://localhost:8888/vmware/vm/create/step3.do
+Content-Type: application/json
+
+{
+  "type" : "HostSystem",
+  "value" : "host-9"
+}
+
+###
+GET http://localhost:8888/vmware/vm/create/step4.do
+Content-Type: application/json
+
+{
+  "type" : "ComputeResource",
+  "value" : "domain-s7"
+}
+
+###
+GET http://localhost:8888/vmware/vm/create/step5.do?vmxId=vmx-14
+Content-Type: application/json
+
+{
+  "morEnv" : {
+    "type" : "EnvironmentBrowser",
+    "value" : "envbrowser-7"
+  },
+  "morHost" : {
+    "type" : "HostSystem",
+    "value" : "host-9"
+  }
+}
+
+###
+GET http://localhost:8888/vmware/datacenter/get.do?name=datacenter-2
+Content-Type: application/json
+
 ###

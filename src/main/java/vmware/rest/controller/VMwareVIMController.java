@@ -1,9 +1,6 @@
 package vmware.rest.controller;
 
-import com.vmware.vim25.GuestOsDescriptor;
-import com.vmware.vim25.InvalidPropertyFaultMsg;
-import com.vmware.vim25.NotFoundFaultMsg;
-import com.vmware.vim25.RuntimeFaultFaultMsg;
+import com.vmware.vim25.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +20,7 @@ public class VMwareVIMController {
     private VimAuthenticationHelper vimAuthenticationHelper;
 
     @GetMapping("/vmware/vim/test.do")
-    public void test() throws RuntimeFaultFaultMsg, InvalidPropertyFaultMsg, NotFoundFaultMsg {
+    public void test() throws RuntimeFaultFaultMsg, InvalidPropertyFaultMsg, NotFoundFaultMsg, HostConfigFaultFaultMsg, InvalidDatastoreFaultMsg {
         //vim();
         vmwareVIMService.test();
     }

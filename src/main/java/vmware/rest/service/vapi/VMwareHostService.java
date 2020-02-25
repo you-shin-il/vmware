@@ -2,7 +2,6 @@ package vmware.rest.service.vapi;
 
 import com.vmware.vcenter.Host;
 import com.vmware.vcenter.HostTypes;
-import com.vmware.vcenter.VMTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
