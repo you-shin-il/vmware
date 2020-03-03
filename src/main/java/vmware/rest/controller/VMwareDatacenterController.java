@@ -3,10 +3,7 @@ package vmware.rest.controller;
 import com.vmware.vcenter.DatacenterTypes;
 import com.vmware.vcenter.DatastoreTypes;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vmware.rest.service.vapi.VMwareDatacenterService;
 import vmware.rest.service.vapi.VMwareDatastoreService;
 
@@ -18,7 +15,7 @@ public class VMwareDatacenterController {
     private VMwareDatacenterService vmwareDatacenterService;
 
     @GetMapping("/vmware/datacenter/get.do")
-    public DatacenterTypes.Info get(@RequestBody String name) {
+    public DatacenterTypes.Info get(@RequestParam String name) {
         DatacenterTypes.Info info = vmwareDatacenterService.get(name);
         System.out.println("======");
         System.out.println(info.toString());

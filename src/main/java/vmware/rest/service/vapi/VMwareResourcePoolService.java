@@ -16,4 +16,8 @@ public class VMwareResourcePoolService {
         return resourcPoolservice.list(new ResourcePoolTypes.FilterSpec.Builder().build());
     }
 
+    public ResourcePoolTypes.Info info(String resourcePool) {
+        ResourcePoolTypes.Info info = resourcPoolservice.get(resourcePool);
+        return info;
+    }
 }

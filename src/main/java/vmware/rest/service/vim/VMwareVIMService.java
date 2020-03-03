@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vmware.common.authentication.VimAuthenticationHelper;
 import vmware.common.helpers.VimUtil;
+import vmware.common.helpers.WaitForValues;
+import vmware.common.vcha.helpers.TaskHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,7 @@ public class VMwareVIMService {
     @Autowired
     private Cluster clusterservice;
 
-    public void test() throws RuntimeFaultFaultMsg, InvalidPropertyFaultMsg, NotFoundFaultMsg, HostConfigFaultFaultMsg, InvalidDatastoreFaultMsg {
+    public void test() throws RuntimeFaultFaultMsg, InvalidPropertyFaultMsg, NotFoundFaultMsg, HostConfigFaultFaultMsg, InvalidDatastoreFaultMsg, FileFaultFaultMsg, InvalidCollectorVersionFaultMsg {
         //VirtualMachineConfigOption virtualMachineConfigOption = test1();
         //RetrieveResult environmentBrowser = this.getEnvironmentBrowser();
         //List<ObjectContent> datastore = this.getDatastore();
@@ -39,6 +41,7 @@ public class VMwareVIMService {
 //
 //        VirtualMachineConfigOption virtualMachineConfigOption = vimAuthenticationHelper.getVimPort().queryConfigOption(m1, "vmx-14", m2);
         //ManagedObjectReference cluster = this.getCluster();
+        ManagedObjectReference datastoreSubFoldersTask = this.getDatastoreSubFoldersTask();
         System.out.println("=============");
     }
 
@@ -390,5 +393,40 @@ public class VMwareVIMService {
         VirtualMachineConfigOption virtualMachineConfigOption = vimAuthenticationHelper.getVimPort().queryConfigOption(morEnv, vmxId, morHost);
 
         return virtualMachineConfigOption;
+    }
+
+    public ManagedObjectReference getDatastoreSubFoldersTask() throws FileFaultFaultMsg, InvalidDatastoreFaultMsg, RuntimeFaultFaultMsg, InvalidPropertyFaultMsg, InvalidCollectorVersionFaultMsg {
+        ManagedObjectReference mor = new ManagedObjectReference();
+        mor.setType("HostDatastoreBrowser");
+        mor.setValue("datastoreBrowser-datastore-10");
+
+        ManagedObjectReference managedObjectReference = vimAuthenticationHelper.getVimPort().searchDatastoreSubFoldersTask(mor, "[datastore1]", getHostDatastoreBrowserSearchSpec());
+        ManagedObjectReference morTask = vimAuthenticationHelper.getVimPort().searchDatastoreTask(mor, "[datastore1]", getHostDatastoreBrowserSearchSpec());
+        ServiceContent serviceContent = VimUtil.getServiceContent(vimAuthenticationHelper.getVimPort());
+
+        Boolean aBoolean = TaskHelper.waitForTask(vimAuthenticationHelper, morTask.getValue());
+
+        WaitForValues waitForValues = new WaitForValues(vimAuthenticationHelper.getVimPort(), serviceContent);
+        boolean taskResultAfterDone = waitForValues.getTaskResultAfterDone(morTask);
+        //HostDatastoreBrowserSearchResults
+        return managedObjectReference;
+    }
+
+    public HostDatastoreBrowserSearchSpec getHostDatastoreBrowserSearchSpec() {
+        VmDiskFileQueryFilter vdiskFilter = new VmDiskFileQueryFilter();
+        VmDiskFileQuery fQuery = new VmDiskFileQuery();
+        fQuery.setFilter(vdiskFilter);
+
+        HostDatastoreBrowserSearchSpec searchSpec = new HostDatastoreBrowserSearchSpec();
+        searchSpec.getQuery().add(fQuery);
+        FileQueryFlags flag = new FileQueryFlags();
+        flag.setFileOwner(true);
+        flag.setFileSize(true);
+        flag.setFileType(true);
+        flag.setModification(true);
+        searchSpec.setDetails(flag);
+        //searchSpec.getMatchPattern().add(diskName + ".vmdk");
+
+        return searchSpec;
     }
 }

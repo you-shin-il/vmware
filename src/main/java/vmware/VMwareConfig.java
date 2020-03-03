@@ -1,12 +1,19 @@
 package vmware;
 
 import com.vmware.content.Library;
+import com.vmware.content.LocalLibrary;
+import com.vmware.content.SubscribedLibrary;
+import com.vmware.content.Type;
 import com.vmware.content.library.Item;
+import com.vmware.content.library.SubscribedItem;
+import com.vmware.content.library.item.File;
 import com.vmware.content.library.item.Storage;
 import com.vmware.vapi.bindings.StubConfiguration;
 import com.vmware.vapi.protocol.HttpConfiguration;
 import com.vmware.vcenter.*;
 import com.vmware.vcenter.guest.CustomizationSpecs;
+import com.vmware.vcenter.iso.Image;
+import com.vmware.vcenter.ovf.LibraryItem;
 import com.vmware.vcenter.vm.Hardware;
 import com.vmware.vcenter.vm.hardware.Memory;
 import com.vmware.vstats.AcqSpecs;
@@ -88,6 +95,11 @@ public class VMwareConfig {
     }
 
     @Bean
+    public com.vmware.vcenter.inventory.Datastore datastoreInventoryservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
+        return vapiAuthenticationHelper.getStubFactory().createStub(com.vmware.vcenter.inventory.Datastore.class, stubConfiguration);
+    }
+
+    @Bean
     public Folder folderservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
         return vapiAuthenticationHelper.getStubFactory().createStub(Folder.class, stubConfiguration);
     }
@@ -105,11 +117,6 @@ public class VMwareConfig {
     @Bean
     public Library libraryservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
         return vapiAuthenticationHelper.getStubFactory().createStub(Library.class, stubConfiguration);
-    }
-
-    @Bean
-    public Item itemsservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
-        return vapiAuthenticationHelper.getStubFactory().createStub(Item.class, stubConfiguration);
     }
 
     @Bean
@@ -150,6 +157,51 @@ public class VMwareConfig {
     @Bean
     public Storage storageservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
         return vapiAuthenticationHelper.getStubFactory().createStub(Storage.class, stubConfiguration);
+    }
+
+    @Bean
+    public LocalLibrary localLibraryservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
+        return vapiAuthenticationHelper.getStubFactory().createStub(LocalLibrary.class, stubConfiguration);
+    }
+
+    @Bean
+    public SubscribedLibrary subscribedLibraryservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
+        return vapiAuthenticationHelper.getStubFactory().createStub(SubscribedLibrary.class, stubConfiguration);
+    }
+
+    @Bean
+    public Item itemservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
+        return vapiAuthenticationHelper.getStubFactory().createStub(Item.class, stubConfiguration);
+    }
+
+    @Bean
+    public SubscribedItem subscribedItemservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
+        return vapiAuthenticationHelper.getStubFactory().createStub(SubscribedItem.class, stubConfiguration);
+    }
+
+    @Bean
+    public File fileservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
+        return vapiAuthenticationHelper.getStubFactory().createStub(File.class, stubConfiguration);
+    }
+
+    @Bean
+    public Image imageservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
+        return vapiAuthenticationHelper.getStubFactory().createStub(Image.class, stubConfiguration);
+    }
+
+    @Bean
+    public LibraryItem libraryItemservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
+        return vapiAuthenticationHelper.getStubFactory().createStub(LibraryItem.class, stubConfiguration);
+    }
+
+    @Bean
+    public com.vmware.content.Configuration configurationservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
+        return vapiAuthenticationHelper.getStubFactory().createStub(com.vmware.content.Configuration.class, stubConfiguration);
+    }
+
+    @Bean
+    public Type typeservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
+        return vapiAuthenticationHelper.getStubFactory().createStub(Type.class, stubConfiguration);
     }
 
     private HttpConfiguration buildHttpConfiguration() throws Exception {

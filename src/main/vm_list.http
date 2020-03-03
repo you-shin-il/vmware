@@ -12,7 +12,16 @@ Content-Type: application/json
 
 ###
 GET http://localhost:8888/vmware/datastore/info.do?datastoreId=datastore-10
-Content-Type: text/html
+Content-Type: application/json
+
+###
+POST http://localhost:8888/vmware/datastore/inventory/list.do
+Content-Type: application/json
+
+[
+    "datastore-10",
+    "datastore-24"
+]
 
 ###
 
@@ -24,7 +33,11 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:8888/vmware/resourcePool/list.do-
+GET http://localhost:8888/vmware/resourcePool/list.do
+Accept: application/json
+
+###
+GET http://localhost:8888/vmware/resourcePool/info.do?resourcePool=resgroup-8
 Accept: application/json
 
 ###
@@ -36,11 +49,35 @@ GET http://localhost:8888/vmware/inventory/find.do
 Accept: application/json
 
 ###
+GET http://localhost:8888/vmware/item/itemIdList.do
+Content-Type: application/json
+
+{
+  "libraryId" : "d2cee98a-11bd-4953-8553-afa9bd9ad976"
+}
+
+###
+GET http://localhost:8888/vmware/item/itemModelList.do
+Content-Type: application/json
+
+{
+  "libraryId" : "d2cee98a-11bd-4953-8553-afa9bd9ad976"
+}
+
+###
 GET http://localhost:8888/vmware/library/list.do
 Accept: application/json
 
 ###
 GET http://localhost:8888/vmware/library/get.do?libraryId=d2cee98a-11bd-4953-8553-afa9bd9ad976
+Accept: application/json
+
+###
+GET http://localhost:8888/vmware/libraryItem/filter.do?libraryId=d2cee98a-11bd-4953-8553-afa9bd9ad976
+Accept: application/json
+
+###
+GET http://localhost:8888/vmware/file/get.do?libraryItemId=e23d3d0a-61d3-4f40-a210-6324a53dc994
 Accept: application/json
 
 ###
@@ -56,7 +93,6 @@ GET http://localhost:8888/vmware/item/itemModelList.do
 Content-Type: application/json
 
 {
-  "libraryId" : "d2cee98a-11bd-4953-8553-afa9bd9ad976",
   "type" : "iso"
 }
 
@@ -76,7 +112,7 @@ Content-Type: application/json
 ###
 
 ###
-GET http://localhost:8888/vmware/content/library/item/storage/list.do
+GET http://localhost:8888/vmware/library/list.do
 Content-Type: application/json
 
 ###
@@ -142,4 +178,68 @@ Content-Type: application/json
 GET http://localhost:8888/vmware/datacenter/get.do?name=datacenter-2
 Content-Type: application/json
 
+###
+
+POST http://localhost:8888/vmware/vm/create.do
+Content-Type: application/json
+
+{
+  "guestOS": "RHEL_7_64",
+  "name": "vm_create_test123",
+  "hardwareVersion": "VMX_14",
+  "placement": {
+    "datastore": "datastore-10",
+    "folder": "group-v3",
+    "resourcePool": "resgroup-8"
+  },
+  "cdroms": [
+    {
+      "startConnected": true,
+      "type": "SATA",
+      "backing": {
+        "isoFile": "[datastore1] rhel-server-7.7-x86_64-dvd.iso",
+        "type": "ISO_FILE"
+      }
+    }
+  ],
+  "cpu": {
+    "count": 2,
+    "coresPerSocket": 1,
+    "hotAddEnabled": true,
+    "hotRemoveEnabled": true
+  },
+  "memory": {
+    "sizeMiB": 40960
+  },
+  "nics": [
+    {
+      "allow_guest_control": true,
+      "backing": {
+        "distributed_port": "string",
+        "network": "network-11",
+        "type": "STANDARD_PORTGROUP"
+      },
+      "mac_address": "string",
+      "mac_type": "MANUAL",
+      "pci_slot_number": 1,
+      "start_connected": true,
+      "type": "VMXNET3",
+      "upt_compatibility_enabled": true,
+      "wake_on_lan_enabled": true
+    }
+  ],
+  "disk": [
+    {
+      "new_vmdk": {
+        "capacity": 16777216
+      },
+      "type": "SCSI"
+    }
+  ],
+  "scsiAdapters": [
+    {
+      "type": "PVSCSI"
+    }
+  ]
+}
 ###

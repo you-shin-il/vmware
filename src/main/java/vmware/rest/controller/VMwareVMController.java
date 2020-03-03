@@ -2,9 +2,9 @@ package vmware.rest.controller;
 
 import com.vmware.vcenter.VMTypes;
 import com.vmware.vcenter.vm.GuestOSFamily;
+import com.vmware.vcenter.vm.HardwareTypes;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vmware.rest.service.vapi.VMwareVMService;
 
 import java.util.List;
@@ -30,6 +30,13 @@ public class VMwareVMController {
         GuestOSFamily other = GuestOSFamily.OTHER;
         GuestOSFamily.Values enumValue = other.getEnumValue();
         System.out.println("=========");
+    }
+
+    @PostMapping("/vmware/vm/create.do")
+    @ResponseBody
+    public String create(@RequestBody VMTypes.CreateSpec createSpec) {
+        System.out.println("=================");
+        return vmwareVMService.create(createSpec);
     }
 
     public void guestOSVersionList() {

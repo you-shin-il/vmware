@@ -20,7 +20,7 @@ public class VMwareVIMController {
     private VimAuthenticationHelper vimAuthenticationHelper;
 
     @GetMapping("/vmware/vim/test.do")
-    public void test() throws RuntimeFaultFaultMsg, InvalidPropertyFaultMsg, NotFoundFaultMsg, HostConfigFaultFaultMsg, InvalidDatastoreFaultMsg {
+    public void test() throws RuntimeFaultFaultMsg, InvalidPropertyFaultMsg, NotFoundFaultMsg, HostConfigFaultFaultMsg, InvalidDatastoreFaultMsg, FileFaultFaultMsg, InvalidCollectorVersionFaultMsg {
         //vim();
         vmwareVIMService.test();
     }

@@ -22,4 +22,10 @@ public class VMwareResourcePoolController {
 
         return list;
     }
+
+    @GetMapping("/vmware/resourcePool/info.do")
+    public ResourcePoolTypes.Info info(String resourcePool) {
+        ResourcePoolTypes.Info info = vmwareResourcePoolService.info(resourcePool);
+        return info;
+    }
 }
