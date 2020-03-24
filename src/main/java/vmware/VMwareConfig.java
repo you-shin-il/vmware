@@ -1,5 +1,6 @@
 package vmware;
 
+import com.vmware.appliance.Monitoring;
 import com.vmware.content.Library;
 import com.vmware.content.LocalLibrary;
 import com.vmware.content.SubscribedLibrary;
@@ -14,9 +15,11 @@ import com.vmware.vcenter.*;
 import com.vmware.vcenter.guest.CustomizationSpecs;
 import com.vmware.vcenter.iso.Image;
 import com.vmware.vcenter.ovf.LibraryItem;
+import com.vmware.vcenter.ovf.LibraryItemStub;
 import com.vmware.vcenter.vm.Hardware;
 import com.vmware.vcenter.vm.hardware.Memory;
 import com.vmware.vstats.AcqSpecs;
+import com.vmware.vstats.Metrics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -195,13 +198,33 @@ public class VMwareConfig {
     }
 
     @Bean
+    public Network networkservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
+        return vapiAuthenticationHelper.getStubFactory().createStub(Network.class, stubConfiguration);
+    }
+
+    @Bean
     public com.vmware.content.Configuration configurationservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
         return vapiAuthenticationHelper.getStubFactory().createStub(com.vmware.content.Configuration.class, stubConfiguration);
     }
 
     @Bean
+    public Metrics metricsservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
+        return vapiAuthenticationHelper.getStubFactory().createStub(com.vmware.vstats.Metrics.class, stubConfiguration);
+    }
+
+    @Bean
     public Type typeservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
         return vapiAuthenticationHelper.getStubFactory().createStub(Type.class, stubConfiguration);
+    }
+
+    @Bean
+    public LibraryItem libraryItemeservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
+        return vapiAuthenticationHelper.getStubFactory().createStub(LibraryItem.class, stubConfiguration);
+    }
+
+    @Bean
+    public Monitoring monitoringservice(@Autowired VapiAuthenticationHelper vapiAuthenticationHelper, @Autowired StubConfiguration stubConfiguration) {
+        return vapiAuthenticationHelper.getStubFactory().createStub(Monitoring.class, stubConfiguration);
     }
 
     private HttpConfiguration buildHttpConfiguration() throws Exception {

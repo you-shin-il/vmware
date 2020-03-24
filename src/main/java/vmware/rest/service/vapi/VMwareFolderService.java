@@ -13,8 +13,8 @@ public class VMwareFolderService {
     @Autowired
     private Folder folderservice;
 
-    public List<FolderTypes.Summary> list() {
-        List<FolderTypes.Summary> list = folderservice.list(new FolderTypes.FilterSpec.Builder().build());
+    public List<FolderTypes.Summary> list(FolderTypes.FilterSpec filterSpec) {
+        List<FolderTypes.Summary> list = folderservice.list(filterSpec);
         list.stream().forEach(x -> {
             System.out.println(x.toString());
         });

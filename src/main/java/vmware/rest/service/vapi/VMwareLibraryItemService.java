@@ -8,12 +8,16 @@ import org.springframework.stereotype.Service;
 @Service("vmwareLibraryItemService")
 public class VMwareLibraryItemService {
     @Autowired
-    private LibraryItem libraryItem;
+    private LibraryItem libraryItemservice;
 
     public LibraryItemTypes.OvfSummary filter(String ovfLibraryItemId, LibraryItemTypes.DeploymentTarget target) {
-        LibraryItemTypes.OvfSummary filter = libraryItem.filter(ovfLibraryItemId, target);
-
+        LibraryItemTypes.OvfSummary filter = libraryItemservice.filter(ovfLibraryItemId, target);
         return filter;
+    }
+
+    public LibraryItemTypes.CreateResult create(String ovfLibraryItemId, LibraryItemTypes.DeploymentTarget target) {
+        LibraryItemTypes.CreateResult createResult = libraryItemservice.create("", null, null, null);
+        return createResult;
     }
 
 }

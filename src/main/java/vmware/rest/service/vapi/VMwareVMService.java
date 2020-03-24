@@ -21,4 +21,8 @@ public class VMwareVMService {
         return vmservice.create(createSpec);
     }
 
+    public VMTypes.Info get(String vmId) {
+        VMTypes.Info info = vmservice.get(vmId);
+        return info;
+    }
 }

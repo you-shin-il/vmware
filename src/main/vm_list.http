@@ -2,6 +2,14 @@ GET http://localhost:8888/vmware/vm/list.do
 Accept: application/json
 
 ###
+GET http://localhost:8888/vmware/vm/get.do?vmId=vm-18
+Accept: application/json
+
+###
+GET http://localhost:8888/vmware/metrics/list.do
+Accept: application/json
+
+###
 GET http://localhost:8888/vmware/datastore/list.do
 Content-Type: application/json
 
@@ -11,7 +19,7 @@ Content-Type: application/json
 ###
 
 ###
-GET http://localhost:8888/vmware/datastore/info.do?datastoreId=datastore-10
+GET http://localhost:8888/vmware/datastore/info.do?datastoreId=datastore-11
 Content-Type: application/json
 
 ###
@@ -19,11 +27,26 @@ POST http://localhost:8888/vmware/datastore/inventory/list.do
 Content-Type: application/json
 
 [
-    "datastore-10",
-    "datastore-24"
+    "datastore-11"
 ]
 
 ###
+
+###
+GET http://localhost:8888/vmware/datacenter/cpuMemoryStorageInfo.do
+Content-Type: application/json
+
+[
+]
+
+###
+
+###
+GET http://localhost:8888/vmware/datacenter/datacenterSummary.do
+Content-Type: application/json
+
+[
+]
 
 ###
 GET http://localhost:8888/vmware/datacenter/list.do
@@ -34,7 +57,11 @@ Content-Type: application/json
 
 ###
 GET http://localhost:8888/vmware/resourcePool/list.do
-Accept: application/json
+Content-Type: application/json
+
+{
+  "hosts" : ["host-9"]
+}
 
 ###
 GET http://localhost:8888/vmware/resourcePool/info.do?resourcePool=resgroup-8
@@ -42,7 +69,11 @@ Accept: application/json
 
 ###
 GET http://localhost:8888/vmware/folder/list.do
-Accept: application/json
+Content-Type: application/json
+
+{
+  "type" : "VIRTUAL_MACHINE"
+}
 
 ###
 GET http://localhost:8888/vmware/inventory/find.do
@@ -77,7 +108,7 @@ GET http://localhost:8888/vmware/libraryItem/filter.do?libraryId=d2cee98a-11bd-4
 Accept: application/json
 
 ###
-GET http://localhost:8888/vmware/file/get.do?libraryItemId=e23d3d0a-61d3-4f40-a210-6324a53dc994
+GET http://localhost:8888/vmware/file/get.do?libraryItemId=67380a65-27ca-44a7-9f08-a22e0c9edc85
 Accept: application/json
 
 ###
@@ -93,7 +124,7 @@ GET http://localhost:8888/vmware/item/itemModelList.do
 Content-Type: application/json
 
 {
-  "type" : "iso"
+  "type" : "vm-template"
 }
 
 ###
@@ -103,6 +134,15 @@ Content-Type: application/json
 ###
 
 GET http://localhost:8888/vmware/customizationSpec/list.do
+Content-Type: application/json
+###
+
+GET http://localhost:8888/vmware/monitoring/list.do
+Content-Type: application/json
+
+###
+
+GET http://localhost:8888/vmware/monitoring/query.do
 Content-Type: application/json
 
 ###
@@ -175,7 +215,20 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:8888/vmware/datacenter/get.do?name=datacenter-2
+GET http://localhost:8888/vmware/datacenter/get.do?name=datacenter-11
+Content-Type: application/json
+
+###
+
+###
+GET http://localhost:8888/vmware/network/list.do
+Content-Type: application/json
+
+{
+
+}
+###
+GET http://localhost:8888/vmware/content/library/item/storage/list.do?itemId=67380a65-27ca-44a7-9f08-a22e0c9edc85
 Content-Type: application/json
 
 ###
@@ -188,7 +241,7 @@ Content-Type: application/json
   "name": "vm_create_test123",
   "hardwareVersion": "VMX_14",
   "placement": {
-    "datastore": "datastore-10",
+    "datastore": "datastore-11",
     "folder": "group-v3",
     "resourcePool": "resgroup-8"
   },
@@ -197,7 +250,7 @@ Content-Type: application/json
       "startConnected": true,
       "type": "SATA",
       "backing": {
-        "isoFile": "[datastore1] rhel-server-7.7-x86_64-dvd.iso",
+        "isoFile": "[datastore1] contentlib-c9b6eab3-cf74-4e6f-bff6-5fde233a64b4/67380a65-27ca-44a7-9f08-a22e0c9edc85/CentOS-7-x86_64-Minimal-1908_cb7a4380-c25a-4a6c-8389-09f64ebdfdd4.iso",
         "type": "ISO_FILE"
       }
     }
@@ -213,19 +266,19 @@ Content-Type: application/json
   },
   "nics": [
     {
-      "allow_guest_control": true,
+      "allowGuestControl": true,
+      "macAddress": null,
+      "macType": "GENERATED",
+      "pciSlotNumber": 1,
+      "startConnected": true,
+      "type": "VMXNET3",
+      "uptCompatibilityEnabled": true,
+      "wakeOnLanEnabled": true,
       "backing": {
         "distributed_port": "string",
-        "network": "network-11",
+        "network": "network-12",
         "type": "STANDARD_PORTGROUP"
-      },
-      "mac_address": "string",
-      "mac_type": "MANUAL",
-      "pci_slot_number": 1,
-      "start_connected": true,
-      "type": "VMXNET3",
-      "upt_compatibility_enabled": true,
-      "wake_on_lan_enabled": true
+      }
     }
   ],
   "disk": [

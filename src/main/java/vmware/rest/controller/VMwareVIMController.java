@@ -8,7 +8,11 @@ import vmware.common.authentication.VimAuthenticationHelper;
 import vmware.common.helpers.VimUtil;
 import vmware.rest.service.vim.GuestOSService;
 import vmware.rest.service.vim.VMwareVIMService;
+import vmware.vim.GetPerfStats;
+import vmware.vim.VimTemplateDeploy;
+import vmware.vim.util.VimMetricsUtil;
 
+import javax.xml.datatype.DatatypeConfigurationException;
 import java.util.List;
 
 @Controller
@@ -20,9 +24,16 @@ public class VMwareVIMController {
     private VimAuthenticationHelper vimAuthenticationHelper;
 
     @GetMapping("/vmware/vim/test.do")
-    public void test() throws RuntimeFaultFaultMsg, InvalidPropertyFaultMsg, NotFoundFaultMsg, HostConfigFaultFaultMsg, InvalidDatastoreFaultMsg, FileFaultFaultMsg, InvalidCollectorVersionFaultMsg {
+    public void test() throws RuntimeFaultFaultMsg, CustomizationFaultFaultMsg, InvalidDatastoreFaultMsg, InsufficientResourcesFaultFaultMsg, FileFaultFaultMsg, VmConfigFaultFaultMsg, InvalidStateFaultMsg, MigrationFaultFaultMsg, TaskInProgressFaultMsg, InvalidPropertyFaultMsg {
         //vim();
-        vmwareVIMService.test();
+        //vmwareVIMService.test();
+/*        VimMetricsUtil metrics = new VimMetricsUtil();
+        metrics.metricsTest();*/
+/*        GetPerfStats getPerfStats = new GetPerfStats();
+        getPerfStats.run();*/
+        VimTemplateDeploy vimTemplateDeploy = new VimTemplateDeploy();
+        //vimTemplateDeploy.getTemplateSpec();
+        vimTemplateDeploy.cloneVMTask();
     }
 
     public void vim() throws RuntimeFaultFaultMsg {

@@ -2,7 +2,6 @@ package vmware.rest.controller;
 
 import com.vmware.vcenter.VMTypes;
 import com.vmware.vcenter.vm.GuestOSFamily;
-import com.vmware.vcenter.vm.HardwareTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import vmware.rest.service.vapi.VMwareVMService;
@@ -22,6 +21,12 @@ public class VMwareVMController {
         System.out.println("======");
 
         return list;
+    }
+
+    @GetMapping("/vmware/vm/get.do")
+    public VMTypes.Info get(@RequestParam String vmId) {
+        VMTypes.Info info = vmwareVMService.get(vmId);
+        return info;
     }
 
     @GetMapping("/vmware/vm/guestOSList.do")

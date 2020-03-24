@@ -9,10 +9,12 @@ import vmware.common.authentication.VimAuthenticationHelper;
 import vmware.common.helpers.VimUtil;
 import vmware.common.helpers.WaitForValues;
 import vmware.common.vcha.helpers.TaskHelper;
+import vmware.vim.VimTemplateDeploy;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service("vmwareVIMService")
 public class VMwareVIMService {
@@ -21,7 +23,7 @@ public class VMwareVIMService {
     @Autowired
     private Cluster clusterservice;
 
-    public void test() throws RuntimeFaultFaultMsg, InvalidPropertyFaultMsg, NotFoundFaultMsg, HostConfigFaultFaultMsg, InvalidDatastoreFaultMsg, FileFaultFaultMsg, InvalidCollectorVersionFaultMsg {
+    public void test() throws RuntimeFaultFaultMsg, CustomizationFaultFaultMsg, InvalidDatastoreFaultMsg, InsufficientResourcesFaultFaultMsg, FileFaultFaultMsg, VmConfigFaultFaultMsg, InvalidStateFaultMsg, MigrationFaultFaultMsg, TaskInProgressFaultMsg, InvalidPropertyFaultMsg {
         //VirtualMachineConfigOption virtualMachineConfigOption = test1();
         //RetrieveResult environmentBrowser = this.getEnvironmentBrowser();
         //List<ObjectContent> datastore = this.getDatastore();
@@ -41,7 +43,19 @@ public class VMwareVIMService {
 //
 //        VirtualMachineConfigOption virtualMachineConfigOption = vimAuthenticationHelper.getVimPort().queryConfigOption(m1, "vmx-14", m2);
         //ManagedObjectReference cluster = this.getCluster();
-        ManagedObjectReference datastoreSubFoldersTask = this.getDatastoreSubFoldersTask();
+
+//        ManagedObjectReference m1 = new ManagedObjectReference();
+//        m1.setType("HostSystem");
+//        m1.setValue("host-9");
+//
+//        RetrieveResult hostDatastore = getHostDatastore(m1);
+//        ManagedObjectReference datastoreSubFoldersTask = this.getDatastoreSubFoldersTask();
+//        RetrieveResult serviceInstance = getServiceInstance();
+        //List<ObjectContent> objectContents = queryConfigOptionDescriptor();
+        //getView();
+        VimTemplateDeploy vimTemplateDeploy = new VimTemplateDeploy();
+        vimTemplateDeploy.cloneVMTask();
+        //List<ObjectContent> objectContents1 = hostCpuMemoryStorageInfo();
         System.out.println("=============");
     }
 
@@ -94,14 +108,6 @@ public class VMwareVIMService {
         return hosts;
     }
 
-    private List<VirtualMachineConfigOptionDescriptor> queryConfigOptionDescriptor() throws RuntimeFaultFaultMsg {
-        ManagedObjectReference mor = new ManagedObjectReference();
-        //mor.setType("EnvironmentBrowser");
-        //mor.setValue("envbrowser-7");
-        List<VirtualMachineConfigOptionDescriptor> virtualMachineConfigOptionDescriptors = vimAuthenticationHelper.getVimPort().queryConfigOptionDescriptor(mor);
-
-        return virtualMachineConfigOptionDescriptors;
-    }
     private List<ObjectContent> getEntityByName() throws RuntimeFaultFaultMsg, InvalidPropertyFaultMsg {
         ServiceContent serviceContent = VimUtil.getServiceContent(vimAuthenticationHelper.getVimPort());
         //ManagedObjectReference rootFolderRef = serviceContent.getRootFolder();
@@ -298,7 +304,7 @@ public class VMwareVIMService {
     }
 
     public RetrieveResult getHostDatastore(ManagedObjectReference mor) throws RuntimeFaultFaultMsg, InvalidPropertyFaultMsg {
-        ManagedObjectReference viewMgrRef = vimAuthenticationHelper.getServiceContent().getViewManager();
+        //ManagedObjectReference viewMgrRef = vimAuthenticationHelper.getServiceContent().getViewManager();
         ManagedObjectReference propColl = vimAuthenticationHelper.getServiceContent().getPropertyCollector();
 
 //        ManagedObjectReference mor = new ManagedObjectReference();
@@ -312,19 +318,16 @@ public class VMwareVIMService {
         TraversalSpec tSpec = new TraversalSpec();
         tSpec.setName("traverseEntities");
         tSpec.setPath("view");
-        tSpec.setSkip(false);
+        tSpec.setSkip(true);
         tSpec.setType("ContainerView");
 
         oSpec.getSelectSet().add(tSpec);
 
-        TraversalSpec tSpecVmN = new TraversalSpec();
-        tSpecVmN.setType("Datastore");
-        tSpecVmN.setPath("name");
-        tSpecVmN.setSkip(false);
-
         PropertySpec pSpec1 = new PropertySpec();
         pSpec1.setType("HostSystem");
-        pSpec1.setAll(Boolean.TRUE);
+        pSpec1.getPathSet().add("hardware");
+        pSpec1.getPathSet().add("summary");
+        pSpec1.setAll(Boolean.FALSE);//true면 propSet.name값이 getPathSet에 있는것만 결과값으로 가져옴
 
         PropertyFilterSpec fSpec = new PropertyFilterSpec();
         fSpec.getObjectSet().add(oSpec);
@@ -408,7 +411,19 @@ public class VMwareVIMService {
 
         WaitForValues waitForValues = new WaitForValues(vimAuthenticationHelper.getVimPort(), serviceContent);
         boolean taskResultAfterDone = waitForValues.getTaskResultAfterDone(morTask);
+
+        ManagedObjectReference datamor = new ManagedObjectReference();
+        datamor.setType("Datastore");
+        datamor.setValue("datastore-11");
+
+        HostDatastoreBrowserSearchResults hostDatastoreBrowserSearchResults = new HostDatastoreBrowserSearchResults();
+        hostDatastoreBrowserSearchResults.setDatastore(datamor);
+        hostDatastoreBrowserSearchResults.setFolderPath("group-d1");
+        List<FileInfo> file = hostDatastoreBrowserSearchResults.getFile();
+
         //HostDatastoreBrowserSearchResults
+
+
         return managedObjectReference;
     }
 
@@ -428,5 +443,330 @@ public class VMwareVIMService {
         //searchSpec.getMatchPattern().add(diskName + ".vmdk");
 
         return searchSpec;
+    }
+
+    public RetrieveResult getServiceInstance() throws FileFaultFaultMsg, InvalidDatastoreFaultMsg, RuntimeFaultFaultMsg, InvalidPropertyFaultMsg, InvalidCollectorVersionFaultMsg {
+        ManagedObjectReference mor = new ManagedObjectReference();
+        mor.setType("ServiceInstance");
+        mor.setValue("ServiceInstance");
+
+        ManagedObjectReference viewMgrRef = vimAuthenticationHelper.getServiceContent().getViewManager();
+        ManagedObjectReference propColl = vimAuthenticationHelper.getServiceContent().getPropertyCollector();
+
+//        ManagedObjectReference mor = new ManagedObjectReference();
+//        mor.setType("HostSystem");
+//        mor.setValue(hostId);
+
+        ObjectSpec oSpec = new ObjectSpec();
+        oSpec.setObj(mor);
+        oSpec.setSkip(false);
+
+        TraversalSpec tSpec = new TraversalSpec();
+        tSpec.setName("traverseEntities");
+        tSpec.setPath("view");
+        tSpec.setSkip(false);
+        tSpec.setType("ContainerView");
+
+        oSpec.getSelectSet().add(tSpec);
+
+        TraversalSpec tSpecVmN = new TraversalSpec();
+        tSpecVmN.setType("Datastore");
+        tSpecVmN.setPath("name");
+        tSpecVmN.setSkip(false);
+
+        PropertySpec pSpec1 = new PropertySpec();
+        pSpec1.setAll(Boolean.TRUE);
+
+        PropertyFilterSpec fSpec = new PropertyFilterSpec();
+        fSpec.getObjectSet().add(oSpec);
+        fSpec.getPropSet().add(pSpec1);
+
+        List<PropertyFilterSpec> fSpecList = new ArrayList<PropertyFilterSpec>();
+        fSpecList.add(fSpec);
+
+        RetrieveOptions ro = new RetrieveOptions();
+        return this.retrievePropertiesEx(propColl, fSpecList, ro);
+    }
+
+    public void getView() throws InvalidPropertyFaultMsg, RuntimeFaultFaultMsg {
+        ManagedObjectReference mor = new ManagedObjectReference();
+        mor.setType("ServiceInstance");
+        mor.setValue("ServiceInstance");
+
+        TraversalSpec tSpec = new TraversalSpec();
+        tSpec.setName("traverseEntities");
+        tSpec.setPath("view");
+        tSpec.setSkip(false);
+        tSpec.setType("ContainerView");
+
+        ObjectSpec oSpec = new ObjectSpec();
+        oSpec.setObj(mor);
+        oSpec.setSkip(true);
+        oSpec.getSelectSet().add(tSpec);
+
+        PropertySpec propertySpec = new PropertySpec();
+        propertySpec.setType("ServerClock");
+        propertySpec.setAll(Boolean.TRUE);
+
+        PropertyFilterSpec fSpec = new PropertyFilterSpec();
+        fSpec.getObjectSet().add(oSpec);
+        fSpec.getPropSet().add(propertySpec);
+
+        List<PropertyFilterSpec> fSpecList = new ArrayList<PropertyFilterSpec>();
+        fSpecList.add(fSpec);
+        RetrieveOptions ro = new RetrieveOptions();
+        ManagedObjectReference propColl = vimAuthenticationHelper.getServiceContent().getPropertyCollector();
+
+        retrievePropertiesEx(propColl, fSpecList, ro);
+
+        //List<ObjectContent> objectContents = vimAuthenticationHelper.getVimPort().retrieveProperties(mor, fSpecList);
+        System.out.println("========");
+    }
+    private RetrieveResult retrievePropertiesEx(ManagedObjectReference mor, List<PropertyFilterSpec> fSpecList, RetrieveOptions ro) throws InvalidPropertyFaultMsg, RuntimeFaultFaultMsg {
+        RetrieveResult retrieveResult = vimAuthenticationHelper.getVimPort().retrievePropertiesEx(mor, fSpecList, ro);
+        return retrieveResult;
+    }
+
+    public List<ObjectContent> queryConfigOptionDescriptor() throws InvalidPropertyFaultMsg, RuntimeFaultFaultMsg {
+        ManagedObjectReference propColl = vimAuthenticationHelper.getServiceContent().getPropertyCollector();
+
+        ManagedObjectReference mor = new ManagedObjectReference();
+        mor.setType("HostSystem");
+        mor.setValue("host-9");
+
+        ObjectSpec oSpec = new ObjectSpec();
+        oSpec.setObj(mor);
+        oSpec.setSkip(false);
+
+        TraversalSpec tSpec = new TraversalSpec();
+        tSpec.setName("traverseEntities");
+        tSpec.setPath("view");
+        tSpec.setSkip(false);
+        tSpec.setType("ContainerView");
+
+        oSpec.getSelectSet().add(tSpec);
+
+        PropertySpec pSpec1 = new PropertySpec();
+        pSpec1.setType("HostSystem");
+        //pSpec1.getPathSet().add("name");
+        pSpec1.setAll(Boolean.TRUE);
+
+        PropertyFilterSpec fSpec = new PropertyFilterSpec();
+        fSpec.getObjectSet().add(oSpec);
+        fSpec.getPropSet().add(pSpec1);
+
+        List<PropertyFilterSpec> fSpecList = new ArrayList<PropertyFilterSpec>();
+        fSpecList.add(fSpec);
+
+        RetrieveOptions ro = new RetrieveOptions();
+        RetrieveResult retrieveResult = vimAuthenticationHelper.getVimPort().retrievePropertiesEx(propColl, fSpecList, ro);
+
+        List<ObjectContent> objects = retrieveResult.getObjects();
+        return objects;
+    }
+
+    public List<ObjectContent> test1() throws InvalidPropertyFaultMsg, RuntimeFaultFaultMsg {
+        ManagedObjectReference propColl = vimAuthenticationHelper.getServiceContent().getPropertyCollector();
+
+        ManagedObjectReference mor = new ManagedObjectReference();
+        mor.setType("HostSystem");
+        mor.setValue("host-9");
+
+        ObjectSpec oSpec = new ObjectSpec();
+        oSpec.setObj(mor);
+        oSpec.setSkip(false);
+
+        TraversalSpec tSpec = new TraversalSpec();
+        tSpec.setName("traverseEntities");
+        tSpec.setPath("view");
+        tSpec.setSkip(false);
+        tSpec.setType("ContainerView");
+
+        oSpec.getSelectSet().add(tSpec);
+
+        PropertySpec pSpec1 = new PropertySpec();
+        pSpec1.setType("HostSystem");
+        pSpec1.getPathSet().add("summary");//앞글자는 소문자로 시작
+
+        PropertyFilterSpec fSpec = new PropertyFilterSpec();
+        fSpec.getObjectSet().add(oSpec);
+        fSpec.getPropSet().add(pSpec1);
+
+        List<PropertyFilterSpec> fSpecList = new ArrayList<PropertyFilterSpec>();
+        fSpecList.add(fSpec);
+
+        RetrieveOptions ro = new RetrieveOptions();
+        RetrieveResult retrieveResult = vimAuthenticationHelper.getVimPort().retrievePropertiesEx(propColl, fSpecList, ro);
+
+        List<ObjectContent> objects = retrieveResult.getObjects();
+        return objects;
+
+    }
+
+    /*public List<ObjectContent> hostCpuMemoryStorageInfo() throws InvalidPropertyFaultMsg, RuntimeFaultFaultMsg {
+        ManagedObjectReference hostSystem1 = new ManagedObjectReference();
+        hostSystem1.setType("HostSystem");
+        hostSystem1.setValue("host-9");
+
+        ObjectSpec oSpec1 = new ObjectSpec();
+        oSpec1.setObj(hostSystem1);
+        oSpec1.setSkip(false);
+
+        ManagedObjectReference hostSystem2 = new ManagedObjectReference();
+        hostSystem2.setType("Datastore");
+        hostSystem2.setValue("datastore-10");
+
+        ObjectSpec oSpec2 = new ObjectSpec();
+        oSpec2.setObj(hostSystem2);
+        oSpec2.setSkip(false);
+
+*//*        TraversalSpec tSpec = new TraversalSpec();
+        tSpec.setName("traverseEntities");
+        tSpec.setPath("view");
+        tSpec.setSkip(false);
+        tSpec.setType("ContainerView");*//*
+
+        PropertySpec propertySpec1 = new PropertySpec();
+        propertySpec1.setType("HostSystem");
+        propertySpec1.getPathSet().add("summary.quickStats");
+        propertySpec1.getPathSet().add("hardware.cpuInfo");
+        propertySpec1.getPathSet().add("hardware.memorySize");
+        propertySpec1.getPathSet().add("datastore");
+
+        PropertySpec propertySpec2 = new PropertySpec();
+        propertySpec2.setType("Datastore");
+        propertySpec2.getPathSet().add("info");
+
+*//*        PropertySpec propertySpec2 = new PropertySpec();
+        propertySpec2.setType("HostSystem");
+        propertySpec2.getPathSet().add("hardware.cpuInfo");
+
+        PropertySpec propertySpec3 = new PropertySpec();
+        propertySpec3.setType("HostSystem");
+        propertySpec3.getPathSet().add("hardware.memorySize");
+
+        PropertySpec propertySpec4 = new PropertySpec();
+        propertySpec4.setType("HostSystem");
+        propertySpec4.getPathSet().add("datastore");*//*
+
+        PropertyFilterSpec fSpec = new PropertyFilterSpec();
+        fSpec.getObjectSet().add(oSpec1);
+        fSpec.getObjectSet().add(oSpec2);
+        fSpec.getPropSet().add(propertySpec1);
+        fSpec.getPropSet().add(propertySpec2);
+*//*        fSpec.getPropSet().add(propertySpec2);
+        fSpec.getPropSet().add(propertySpec3);
+        fSpec.getPropSet().add(propertySpec4);*//*
+
+        List<PropertyFilterSpec> fSpecList = new ArrayList<PropertyFilterSpec>();
+        fSpecList.add(fSpec);
+
+        RetrieveResult retrieveResult = vimAuthenticationHelper.getVimPort().retrievePropertiesEx(vimAuthenticationHelper.getServiceContent().getPropertyCollector(), fSpecList, new RetrieveOptions());
+
+        List<ObjectContent> objects = retrieveResult.getObjects();
+        return objects;
+    }*/
+
+    public List<ObjectContent> hostCpuMemoryStorageInfo() throws InvalidPropertyFaultMsg, RuntimeFaultFaultMsg {
+        ManagedObjectReference hostSystem1 = new ManagedObjectReference();
+        hostSystem1.setType("HostSystem");
+        hostSystem1.setValue("host-9");
+
+        ObjectSpec oSpec1 = new ObjectSpec();
+        oSpec1.setObj(hostSystem1);
+        oSpec1.setSkip(false);
+
+/*        ManagedObjectReference hostSystem2 = new ManagedObjectReference();
+        hostSystem2.setType("Datastore");
+        hostSystem2.setValue("datastore-10");
+
+        ObjectSpec oSpec2 = new ObjectSpec();
+        oSpec2.setObj(hostSystem2);
+        oSpec2.setSkip(false);*/
+
+        PropertySpec propertySpec1 = new PropertySpec();
+        propertySpec1.setType("HostSystem");
+        propertySpec1.getPathSet().add("summary.quickStats");
+        propertySpec1.getPathSet().add("hardware.cpuInfo");
+        propertySpec1.getPathSet().add("hardware.memorySize");
+        propertySpec1.getPathSet().add("datastore");
+
+        PropertySpec propertySpec2 = new PropertySpec();
+        propertySpec2.setType("Datastore");
+        propertySpec2.getPathSet().add("info");
+
+        PropertyFilterSpec fSpec = new PropertyFilterSpec();
+        fSpec.getObjectSet().add(oSpec1);
+        //fSpec.getObjectSet().add(oSpec2);
+        fSpec.getPropSet().add(propertySpec1);
+        fSpec.getPropSet().add(propertySpec2);
+
+        List<PropertyFilterSpec> fSpecList = new ArrayList<PropertyFilterSpec>();
+        fSpecList.add(fSpec);
+
+        List<ObjectContent> objectContents = getObjectContents(fSpecList);
+        Optional<DynamicProperty> first = objectContents.stream().map(x -> x.getPropSet()).flatMap(y -> y.stream()).filter(s -> "datastore".equals(s.getName())).findFirst();
+
+        if(first.isPresent()) {
+            DynamicProperty dynamicProperty = first.get();
+            ArrayOfManagedObjectReference datastores = (ArrayOfManagedObjectReference)dynamicProperty.getVal();
+            List<ManagedObjectReference> managedObjectReference = datastores.getManagedObjectReference();
+            List<ObjectContent> datastoreObjContent = datastoreSummary(managedObjectReference);
+            objectContents.addAll(datastoreObjContent);
+        }
+
+        return objectContents;
+    }
+
+    public List<ObjectContent> datastoreSummary(List<ManagedObjectReference> managedObjectReference) throws InvalidPropertyFaultMsg, RuntimeFaultFaultMsg {
+        List<ObjectSpec> collect = managedObjectReference.stream().collect(Collectors.mapping(
+                obj -> {
+                    ObjectSpec oSpec = new ObjectSpec();
+                    oSpec.setObj(obj);
+                    oSpec.setSkip(false);
+                    return oSpec;
+                }, Collectors.toList())
+        );
+
+/*        ManagedObjectReference mor1 = new ManagedObjectReference();
+        mor1.setType("Datastore");
+        mor1.setValue("datastore-10");
+
+        ObjectSpec oSpec1 = new ObjectSpec();
+        oSpec1.setObj(mor1);
+        oSpec1.setSkip(false);
+
+        ManagedObjectReference mor2 = new ManagedObjectReference();
+        mor2.setType("Datastore");
+        mor2.setValue("datastore-11");
+
+        ObjectSpec oSpec2 = new ObjectSpec();
+        oSpec2.setObj(mor2);
+        oSpec2.setSkip(false);*/
+
+        PropertySpec propertySpec1 = new PropertySpec();
+        propertySpec1.setType("Datastore");
+        propertySpec1.getPathSet().add("summary");
+
+        PropertySpec propertySpec2 = new PropertySpec();
+        propertySpec2.setType("Datastore");
+        propertySpec2.getPathSet().add("summary");
+
+        PropertyFilterSpec fSpec = new PropertyFilterSpec();
+        fSpec.getObjectSet().addAll(collect);
+        fSpec.getPropSet().add(propertySpec1);
+        //fSpec.getPropSet().add(propertySpec2);
+
+        List<PropertyFilterSpec> fSpecList = new ArrayList<PropertyFilterSpec>();
+        fSpecList.add(fSpec);
+
+        List<ObjectContent> objectContents = getObjectContents(fSpecList);
+        return objectContents;
+    }
+
+    public List<ObjectContent> getObjectContents(List<PropertyFilterSpec> fSpecList) throws InvalidPropertyFaultMsg, RuntimeFaultFaultMsg {
+        RetrieveResult retrieveResult = vimAuthenticationHelper.getVimPort().retrievePropertiesEx(vimAuthenticationHelper.getServiceContent().getPropertyCollector(), fSpecList, new RetrieveOptions());
+        List<ObjectContent> objects = retrieveResult.getObjects();
+        return objects;
     }
 }

@@ -12,8 +12,8 @@ public class VMwareResourcePoolService {
     @Autowired
     private ResourcePool resourcPoolservice;
 
-    public List<ResourcePoolTypes.Summary> list() {
-        return resourcPoolservice.list(new ResourcePoolTypes.FilterSpec.Builder().build());
+    public List<ResourcePoolTypes.Summary> list(ResourcePoolTypes.FilterSpec spec) {
+        return resourcPoolservice.list(spec);
     }
 
     public ResourcePoolTypes.Info info(String resourcePool) {
