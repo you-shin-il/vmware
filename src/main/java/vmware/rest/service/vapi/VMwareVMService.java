@@ -14,6 +14,7 @@ public class VMwareVMService {
     private VM vmservice;
 
     public List<VMTypes.Summary> list() {
+
         return vmservice.list(new VMTypes.FilterSpec.Builder().build());
     }
 

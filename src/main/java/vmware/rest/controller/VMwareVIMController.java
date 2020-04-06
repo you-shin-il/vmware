@@ -5,14 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import vmware.common.authentication.VimAuthenticationHelper;
-import vmware.common.helpers.VimUtil;
-import vmware.rest.service.vim.GuestOSService;
 import vmware.rest.service.vim.VMwareVIMService;
-import vmware.vim.GetPerfStats;
 import vmware.vim.VimTemplateDeploy;
-import vmware.vim.util.VimMetricsUtil;
 
-import javax.xml.datatype.DatatypeConfigurationException;
 import java.util.List;
 
 @Controller
@@ -32,6 +27,9 @@ public class VMwareVIMController {
 /*        GetPerfStats getPerfStats = new GetPerfStats();
         getPerfStats.run();*/
         VimTemplateDeploy vimTemplateDeploy = new VimTemplateDeploy();
+        List<ObjectContent> template = vimTemplateDeploy.getTemplate();
+        ObjectContent objectContent = template.get(0);
+        //vimTemplateDeploy.getTemplateSpec(objectContent);
         //vimTemplateDeploy.getTemplateSpec();
         vimTemplateDeploy.cloneVMTask();
     }

@@ -14,7 +14,6 @@ public class VMwareItemService {
     @Autowired
     private Item item;
 
-
     public List<String> getLibraryItemIds(ItemTypes.FindSpec findSpec) {
         return item.find(findSpec);
     }

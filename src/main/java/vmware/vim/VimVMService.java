@@ -7,11 +7,12 @@ import vmware.common.helpers.VimUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
-public class VimTemplateDeploy {
+public class VimVMService {
     private VimAuthenticationHelper vimAuthenticationHelper;
 
-    public VimTemplateDeploy() {
+    public VimVMService() {
         vimAuthenticationHelper = new VimAuthenticationHelper();
         vimAuthenticationHelper.loginByUsernameAndPassword("192.168.50.22", "administrator@vsphere.local", "admin123!Q");
     }
@@ -19,6 +20,11 @@ public class VimTemplateDeploy {
     public void deploy() {
 
     }
+
+    public void list(Set<String> vmId) {
+
+    }
+
 
     public VirtualMachineCloneSpec getVirtualMachineCloneSpec() {
         ManagedObjectReference vmMor = new ManagedObjectReference();
@@ -256,7 +262,6 @@ public class VimTemplateDeploy {
         RetrieveOptions retrieveOptions = new RetrieveOptions();
 
         RetrieveResult retrieveResult = vimAuthenticationHelper.getVimPort().retrievePropertiesEx(propColl, fSpecList, retrieveOptions);
-
         return isTemplateFilter(retrieveResult.getObjects());
     }
 

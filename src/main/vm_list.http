@@ -2,11 +2,23 @@ GET http://localhost:8888/vmware/vm/list.do
 Accept: application/json
 
 ###
-GET http://localhost:8888/vmware/vm/get.do?vmId=vm-18
+GET http://localhost:8888/vmware/vim/vm/list.do
+Accept: application/json
+
+###
+GET http://localhost:8888/vmware/vm/get.do?vmId=vm-147
+Accept: application/json
+
+###
+GET http://localhost:8888/vmware/hardware/info.do?vmId=vm-147
 Accept: application/json
 
 ###
 GET http://localhost:8888/vmware/metrics/list.do
+Accept: application/json
+
+###
+GET http://localhost:8888/vmware/summary/datacenter/test.do
 Accept: application/json
 
 ###
@@ -200,7 +212,7 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:8888/vmware/vm/create/step5.do?vmxId=vmx-14
+GET http://localhost:8888/vmware/vm/create/step5.do?vmxId=vmx-10
 Content-Type: application/json
 
 {
@@ -212,6 +224,14 @@ Content-Type: application/json
     "type" : "HostSystem",
     "value" : "host-9"
   }
+}
+
+###
+GET http://localhost:8888/vmware/vm/create/getTemplateList.do
+Content-Type: application/json
+
+{
+  "type": "vm-template"
 }
 
 ###
@@ -295,4 +315,40 @@ Content-Type: application/json
     }
   ]
 }
+
+###
+
+POST http://localhost:8888/virtualMachineConfigSpec.do
+Content-Type: application/json
+
+{
+  "cdroms" : [
+    {
+
+    }
+  ],
+  "disks" : [
+    {
+      "capacityInKB": "33554432",
+      "capacityInBytes": "34359738368",
+      "shares": {
+        "shares": "1000",
+        "level": "NORMAL"
+        },
+        "storageIOAllocation": {
+          "limit": -1,
+          "shares": {
+            "shares": 1000,
+            "level": "NORMAL"
+          },
+          "reservation": 0
+        },
+        "deviceInfo": {
+          "label": "CD/DVD drive 1",
+          "summary": "ISO [datastore_ysi] Windows_10_pro_K_x64_TH2_net3.5_hotfix_2016-11-09.iso"
+        }
+      }
+  ]
+}
+
 ###
