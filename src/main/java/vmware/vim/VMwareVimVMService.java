@@ -2,6 +2,8 @@ package vmware.vim;
 
 import com.vmware.vim25.*;
 import vmware.common.authentication.VimAuthenticationHelper;
+import vmware.vim.util.UtilPropertySpec;
+import vmware.vim.util.UtilTraversalSpec;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -167,27 +169,42 @@ public class VMwareVimVMService {
 
         propertyFilterSpec.getObjectSet().add(objectSpec);
 
-        PropertySpec datacenterPropertySpec = new PropertySpec();
-        datacenterPropertySpec.setType("Datacenter");
-        datacenterPropertySpec.getPathSet().addAll(Arrays.asList("vmFolder", "hostFolder", "datastoreFolder", "networkFolder"));
+        PropertySpec datacenterPropertySpec = UtilPropertySpec.createPropertySpec(UtilPropertySpec.ALL_PATH_FALSE, UtilPropertySpec.Type.Datacenter, Arrays.asList("vmFolder", "hostFolder", "datastoreFolder", "networkFolder"));
 
-        PropertySpec folderPropertySpec = new PropertySpec();
-        folderPropertySpec.setType("Folder");
-        folderPropertySpec.setAll(Boolean.FALSE);
-        folderPropertySpec.getPathSet().addAll(Arrays.asList("childEntity"));
+//        datacenterPropertySpec.setType("Datacenter");
+//        datacenterPropertySpec.getPathSet().addAll(Arrays.asList("vmFolder", "hostFolder", "datastoreFolder", "networkFolder"));
 
-        PropertySpec vmPropertySpec = new PropertySpec();
-        vmPropertySpec.setType("VirtualMachine");
-        vmPropertySpec.getPathSet().addAll(Arrays.asList("name"));
+        PropertySpec folderPropertySpec
+                = UtilPropertySpec.createPropertySpec(UtilPropertySpec.ALL_PATH_FALSE, UtilPropertySpec.Type.Folder, Arrays.asList("childEntity"));
+//        folderPropertySpec.setType("Folder");
+//        folderPropertySpec.setAll(Boolean.FALSE);
+//        folderPropertySpec.getPathSet().addAll(Arrays.asList("childEntity"));
+
+        PropertySpec vmPropertySpec
+                = UtilPropertySpec.createPropertySpec(UtilPropertySpec.ALL_PATH_TRUE,
+                                                      UtilPropertySpec.Type.VirtualMachine,
+                                                      Arrays.asList("name", "guestHeartbeatStatus", "overallStatus", "configStatus", "parent",
+                                                                    "summary.guest.guestId", "summary.guest.guestFullName", "summary.guest.toolsStatus",
+                                                                    "summary.guest.hostName", "summary.guest.ipAddress", "summary.storage.committed",
+                                                                    "summary.quickStats.overallCpuUsage", "summary.quickStats.guestMemoryUsage", "runtime.host",
+                                                                    "runtime.powerState", "runtime.bootTime")
+                                                     );
+
+//        vmPropertySpec.setType("VirtualMachine");
+//        vmPropertySpec.getPathSet().addAll(Arrays.asList("name"));
 
         PropertySpec clusterPropertySpec = new PropertySpec();
         clusterPropertySpec.setType("ClusterComputeResource");
         clusterPropertySpec.setAll(Boolean.TRUE);
 
+        PropertySpec hostPropertySpec
+                = UtilPropertySpec.createPropertySpec(UtilPropertySpec.ALL_PATH_TRUE, UtilPropertySpec.Type.HostSystem, null);
+
         propertyFilterSpec.getPropSet().add(folderPropertySpec);
         propertyFilterSpec.getPropSet().add(datacenterPropertySpec);
         propertyFilterSpec.getPropSet().add(vmPropertySpec);
         propertyFilterSpec.getPropSet().add(clusterPropertySpec);
+        propertyFilterSpec.getPropSet().add(hostPropertySpec);
 
         List<PropertyFilterSpec> fSpecList = new ArrayList<PropertyFilterSpec>();
         fSpecList.add(propertyFilterSpec);
@@ -197,6 +214,7 @@ public class VMwareVimVMService {
         ManagedObjectReference propColl = vimAuthenticationHelper.getServiceContent().getPropertyCollector();
 
         RetrieveResult retrieveResult = vimAuthenticationHelper.getVimPort().retrievePropertiesEx(propColl, fSpecList, retrieveOptions);
+        datacenterInit(retrieveResult);
     }
 
     public HashMap<String, List<ObjectContent>> typeFilter(RetrieveResult retrieveResult, Set<String> typeSet) {
@@ -211,30 +229,40 @@ public class VMwareVimVMService {
     }
 
     public TraversalSpec getTraversalSpec() {
-        TraversalSpec containerTraversalSpec = new TraversalSpec();
-        containerTraversalSpec.setType("ContainerView");
-        containerTraversalSpec.setPath("view");
-        containerTraversalSpec.setSkip(Boolean.FALSE);
+        TraversalSpec containerTraversalSpec = UtilTraversalSpec.createTraversalSpec(Boolean.FALSE, UtilTraversalSpec.Type.ContainerView, UtilTraversalSpec.Path.view);
+//        containerTraversalSpec.setType("ContainerView");
+//        containerTraversalSpec.setPath("view");
+//        containerTraversalSpec.setSkip(Boolean.FALSE);
 
-        TraversalSpec vmFolderTraversalSpec = new TraversalSpec();
-        vmFolderTraversalSpec.setType("Datacenter");//datastoreTraversalSpec.setPath("resourcePool");
-        vmFolderTraversalSpec.setPath("vmFolder");
-        vmFolderTraversalSpec.setSkip(Boolean.FALSE);
-        containerTraversalSpec.getSelectSet().add(vmFolderTraversalSpec);
+        TraversalSpec folderChildEntityTraversalSpec = UtilTraversalSpec.createTraversalSpec(Boolean.FALSE, UtilTraversalSpec.Type.Folder, UtilTraversalSpec.Path.childEntity);
+//        folderChildEntityTraversalSpec.setType("Folder");
+//        folderChildEntityTraversalSpec.setPath("childEntity");
+//        folderChildEntityTraversalSpec.setSkip(Boolean.FALSE);
 
-        TraversalSpec hostFolderTraversalSpec = new TraversalSpec();
-        hostFolderTraversalSpec.setType("Datacenter");//datastoreTraversalSpec.setPath("resourcePool");
-        hostFolderTraversalSpec.setPath("hostFolder");
-        hostFolderTraversalSpec.setSkip(Boolean.FALSE);
+//        TraversalSpec vmFolderTraversalSpec = UtilTraversalSpec.getTraversalSpec(UtilTraversalSpec.Path.vmFolder, UtilTraversalSpec.Type.Datacenter, Boolean.FALSE);
+//        vmFolderTraversalSpec.setType("Datacenter");//datastoreTraversalSpec.setPath("resourcePool");
+//        vmFolderTraversalSpec.setPath("vmFolder");
+//        vmFolderTraversalSpec.setSkip(Boolean.FALSE);
+//        containerTraversalSpec.getSelectSet().add(vmFolderTraversalSpec);
+
+        TraversalSpec hostFolderTraversalSpec = UtilTraversalSpec.createTraversalSpec(Boolean.FALSE, UtilTraversalSpec.Type.Datacenter, UtilTraversalSpec.Path.hostFolder);
+//        hostFolderTraversalSpec.setType("Datacenter");//datastoreTraversalSpec.setPath("resourcePool");
+//        hostFolderTraversalSpec.setPath("hostFolder");
+//        hostFolderTraversalSpec.setSkip(Boolean.FALSE);
         containerTraversalSpec.getSelectSet().add(hostFolderTraversalSpec);
 
-        TraversalSpec folderChildEntityTraversalSpec = new TraversalSpec();
-        folderChildEntityTraversalSpec.setType("Folder");
-        folderChildEntityTraversalSpec.setPath("childEntity");
-        folderChildEntityTraversalSpec.setSkip(Boolean.FALSE);
+        TraversalSpec clusterComputeResourceTraversalSpec = UtilTraversalSpec.createTraversalSpec(Boolean.FALSE, UtilTraversalSpec.Type.ClusterComputeResource, UtilTraversalSpec.Path.host);
+        folderChildEntityTraversalSpec.getSelectSet().add(clusterComputeResourceTraversalSpec);
 
-        vmFolderTraversalSpec.getSelectSet().add(folderChildEntityTraversalSpec);
+        //vmFolderTraversalSpec.getSelectSet().add(folderChildEntityTraversalSpec);
         hostFolderTraversalSpec.getSelectSet().add(folderChildEntityTraversalSpec);
+        //folderChildEntityTraversalSpec.getSelectSet().add(clusterComputeResourceTraversalSpec);
+
+        TraversalSpec hostTraversalSpec = UtilTraversalSpec.createTraversalSpec(Boolean.FALSE, UtilTraversalSpec.Type.HostSystem, UtilTraversalSpec.Path.vm);
+        clusterComputeResourceTraversalSpec.getSelectSet().add(hostTraversalSpec);
+
+        //vmFolderTraversalSpec.getSelectSet().add(folderChildEntityTraversalSpec);
+        //hostFolderTraversalSpec.getSelectSet().add(folderChildEntityTraversalSpec);
 
 /*        TraversalSpec hostFolderTraversalSpec = new TraversalSpec();
         hostFolderTraversalSpec.setType("Datacenter");//datastoreTraversalSpec.setPath("resourcePool");
@@ -256,4 +284,12 @@ public class VMwareVimVMService {
 
         return containerTraversalSpec;
     }
+
+    private Datacenter datacenterInit(RetrieveResult retrieveResult) {
+        List<ObjectContent> objects = retrieveResult.getObjects();
+        List<ObjectContent> vmObjectContent = objects.stream().filter(objectContent -> "VirtualMachine".equals(objectContent.getObj().getType())).collect(Collectors.toList());
+        List<VM> collect = vmObjectContent.stream().map(objectContent -> new VM(objectContent)).collect(Collectors.toList());
+        return null;
+    }
+
 }

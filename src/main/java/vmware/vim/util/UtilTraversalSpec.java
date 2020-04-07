@@ -5,18 +5,18 @@ import com.vmware.vim25.TraversalSpec;
 public class UtilTraversalSpec {
 
     public enum Type {
-        ContainerView, Datacenter, Folder
+        ContainerView, Datacenter, Folder, ClusterComputeResource, HostSystem, VirtualMachine
     }
 
     public enum Path {
-        view, vmFolder, hostFolder, childEntity
+        view, vmFolder, hostFolder, childEntity, host, vm
     }
 
-    public TraversalSpec getTraversalSpec(Type type, Path path, Boolean skip) {
-        TraversalSpec getContainerView_view = new TraversalSpec();
-        getContainerView_view.setType(type.toString());
-        getContainerView_view.setPath(path.toString());
-        getContainerView_view.setSkip(skip);
-        return getContainerView_view;
+    public static TraversalSpec createTraversalSpec(Boolean skip, Type type, Path path) {
+        TraversalSpec traversalSpec = new TraversalSpec();
+        traversalSpec.setType(type.toString());
+        traversalSpec.setPath(path.toString());
+        traversalSpec.setSkip(skip);
+        return traversalSpec;
     }
 }
